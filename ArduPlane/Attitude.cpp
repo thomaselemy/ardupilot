@@ -1076,6 +1076,14 @@ void Plane::set_servos(void)
             // normal throttle calculation based on servo_out
             channel_throttle->calc_pwm();
         }
+
+        // suppress throttle when soaring is active
+        if ((control_mode == FLY_BY_WIRE_B || control_mode == CRUISE ||
+            control_mode == AUTO || control_mode == LOITER) &&
+            g2.soaring_controller.is_active() &&
+            g2.soaring_controller.get_throttle_suppressed()) {
+            channel_throttle->set_servo_out(0);
+        }
 #endif
     }
 

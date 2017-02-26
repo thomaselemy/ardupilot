@@ -585,6 +585,9 @@ public:
 
     // internal combustion engine control
     AP_ICEngine ice_control;
+    
+    // ArduSoar parameters
+    SoaringController soaring_controller;
 };
 
 extern const AP_Param::Info var_info[];

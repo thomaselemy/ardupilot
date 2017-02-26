@@ -1379,11 +1379,16 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @Path: ../libraries/AP_ICEngine/AP_ICEngine.cpp
     AP_SUBGROUPINFO(ice_control, "ICE_", 2, ParametersG2, AP_ICEngine),
     
+    // @Group: SOAR_
+    // @Path: ../libraries/AP_Soaring/AP_Soaring.cpp
+    AP_SUBGROUPINFO(soaring_controller, "SOAR_", 8, ParametersG2, SoaringController),
+  
     AP_GROUPEND
 };
 
 ParametersG2::ParametersG2(void) :
-    ice_control(plane.rpm_sensor, plane.ahrs)
+    ice_control(plane.rpm_sensor, plane.ahrs),
+    soaring_controller(plane.ahrs, plane.TECS_controller, plane.aparm)
 {
     AP_Param::setup_object_defaults(this, var_info);
 }

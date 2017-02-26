@@ -74,6 +74,7 @@
 #include <AP_NavEKF2/AP_NavEKF2.h>
 #include <AP_Mission/AP_Mission.h>     // Mission command library
 
+#include <AP_Soaring/AP_Soaring.h>
 #include <AP_Notify/AP_Notify.h>      // Notify library
 #include <AP_BattMonitor/AP_BattMonitor.h> // Battery monitor library
 
@@ -244,7 +245,7 @@ private:
 #endif
 
     AP_L1_Control L1_controller {ahrs};
-    AP_TECS TECS_controller {ahrs, aparm};
+    AP_TECS TECS_controller {ahrs, aparm, g2.soaring_controller};
 
     // Attitude to servo controllers
     AP_RollController  rollController {ahrs, aparm, DataFlash};
@@ -433,7 +434,7 @@ private:
     } acro_state;
 
     // CRUISE controller state
-    struct {
+    struct CruiseState {
         bool locked_heading;
         int32_t locked_heading_cd;
         uint32_t lock_timer_ms;
@@ -1111,6 +1112,7 @@ private:
     void parachute_release();
     bool parachute_manual_release();
     void accel_cal_update(void);
+    void update_soaring();
 
     // support for AP_Avoidance custom flight mode, AVOID_ADSB
     bool avoid_adsb_init(bool ignore_checks);

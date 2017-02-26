@@ -58,3 +58,4 @@ LIBRARIES += AC_WPNav
 LIBRARIES += AC_Fence
 LIBRARIES += AC_Avoidance
 LIBRARIES += AP_Tuning
+LIBRARIES += AP_Soaring
