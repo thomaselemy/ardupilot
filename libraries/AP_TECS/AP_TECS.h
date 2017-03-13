@@ -26,12 +26,14 @@
 #include <AP_Vehicle/AP_Vehicle.h>
 #include <AP_SpdHgtControl/AP_SpdHgtControl.h>
 #include <DataFlash/DataFlash.h>
+#include <AP_Soaring/AP_Soaring.h>
 
 class AP_TECS : public AP_SpdHgtControl {
 public:
     AP_TECS(AP_AHRS &ahrs, const AP_Vehicle::FixedWing &parms) :
         _ahrs(ahrs),
-        aparm(parms)
+        aparm(parms),
+        _soaring_controller(soaring_controller)
     {
         AP_Param::setup_object_defaults(this, var_info);
     }
@@ -131,6 +133,9 @@ private:
     AP_AHRS &_ahrs;
 
     const AP_Vehicle::FixedWing &aparm;
+
+    // reference to const SoaringController to access its state
+    const SoaringController &_soaring_controller;
 
     // TECS tuning parameters
     AP_Float _hgtCompFiltOmega;
