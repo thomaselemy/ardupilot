@@ -23,6 +23,7 @@ public:
         AP_HAL::I2CDeviceManager* _i2c_mgr,
         AP_HAL::SPIDeviceManager* _spi,
         AP_HAL::AnalogIn*   _analogin,
+        AP_HAL::AnalogIn*   _analogin2,
         AP_HAL::Storage*    _storage,
         AP_HAL::UARTDriver* _console,
         AP_HAL::GPIO*       _gpio,
@@ -41,6 +42,7 @@ public:
         i2c_mgr(_i2c_mgr),
         spi(_spi),
         analogin(_analogin),
+        analogin2(_analogin2),
         storage(_storage),
         console(_console),
         gpio(_gpio),
@@ -80,6 +82,7 @@ public:
     AP_HAL::I2CDeviceManager* i2c_mgr;
     AP_HAL::SPIDeviceManager* spi;
     AP_HAL::AnalogIn*   analogin;
+    AP_HAL::AnalogIn*   analogin2;
     AP_HAL::Storage*    storage;
     AP_HAL::UARTDriver* console;
     AP_HAL::GPIO*       gpio;
