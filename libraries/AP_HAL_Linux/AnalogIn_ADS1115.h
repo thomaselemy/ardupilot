@@ -24,7 +24,7 @@ private:
 
 class AnalogIn_ADS1115: public AP_HAL::AnalogIn {
 public:
-    AnalogIn_ADS1115();
+    AnalogIn_ADS1115(char addr);
 
     void init() override;
     AP_HAL::AnalogSource *channel(int16_t n) override;

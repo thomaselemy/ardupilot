@@ -31,7 +31,7 @@ extern const AP_HAL::HAL &hal;
 
 bool AP_Airspeed_Analog::init()
 {
-    _source = hal.analogin->channel(_pin);
+    _source = hal.analogin2->channel(_pin);
     return true;
 }
 

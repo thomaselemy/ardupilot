@@ -41,9 +41,9 @@ float AnalogSource_ADS1115::voltage_average_ratiometric()
 
 extern const AP_HAL::HAL &hal;
 
-AnalogIn_ADS1115::AnalogIn_ADS1115()
+AnalogIn_ADS1115::AnalogIn_ADS1115(char addr)
 {
-    _adc = new AP_ADC_ADS1115();
+    _adc = new AP_ADC_ADS1115(addr);
     _channels_number = _adc->get_channels_number();
 }
 

@@ -16,7 +16,7 @@ struct adc_report_s
 class AP_ADC_ADS1115
 {
 public:
-    AP_ADC_ADS1115();
+    AP_ADC_ADS1115(char addr);
     ~AP_ADC_ADS1115();
 
     bool init();
@@ -41,4 +41,6 @@ private:
     bool _start_conversion(uint8_t channel);
 
     float _convert_register_data_to_mv(int16_t word) const;
+
+    char _i2c_addr;
 };

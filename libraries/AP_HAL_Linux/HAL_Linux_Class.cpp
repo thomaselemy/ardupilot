@@ -84,7 +84,8 @@ static SPIDeviceManager spi_mgr_instance;
     CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_ERLEBRAIN2 || \
     CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_BH || \
     CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_PXFMINI
-static AnalogIn_ADS1115 analogIn;
+static AnalogIn_ADS1115 analogIn(0x48);
+static AnalogIn_ADS1115 analogIn2(0x49);
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_RASPILOT
 static AnalogIn_Raspilot analogIn;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_PXF || \
@@ -225,6 +226,7 @@ HAL_Linux::HAL_Linux() :
         &i2c_mgr_instance,
         &spi_mgr_instance,
         &analogIn,
+        &analogIn2,
         &storageDriver,
         &uartADriver,
         &gpioDriver,
@@ -345,6 +347,9 @@ void HAL_Linux::run(int argc, char* const argv[], Callbacks* callbacks) const
     uartE->begin(115200);
     uartF->begin(115200);
     analogin->init();
+#if      CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_PXFMINI
+    analogin2->init();
+#endif
     utilInstance.init(argc+gopt.optind-1, &argv[gopt.optind-1]);
 
     // NOTE: See commit 9f5b4ffca ("AP_HAL_Linux_Class: Correct
