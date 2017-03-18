@@ -1083,6 +1083,7 @@ void Plane::set_servos(void)
             g2.soaring_controller.is_active() &&
             g2.soaring_controller.get_throttle_suppressed()) {
             channel_throttle->set_servo_out(0);
+            channel_throttle->calc_pwm();
         }
 #endif
     }
