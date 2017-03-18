@@ -251,7 +251,7 @@ void SoaringController::get_wind_corrected_drift(const Location *current_loc, co
 
 void SoaringController::get_altitude_wrt_home(float *alt)
 {
-    _ahrs.get_relative_position_D_home(*alt);
+    _ahrs.get_relative_position_D(*alt);
     *alt *= -1.0f;
 }
 void SoaringController::update_thermalling()
