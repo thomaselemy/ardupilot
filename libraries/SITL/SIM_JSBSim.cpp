@@ -342,6 +342,10 @@ void JSBSim::send_servos(const struct sitl_input &input)
         rudder   = (ch2+ch1)/2.0f;
     }
     float wind_speed_fps = input.wind.speed / FEET_TO_METERS;
+
+    float wind_v_speed = get_local_updraft(location);
+    float wind_vspd_fps =  wind_v_speed/ FEET_TO_METERS;
+
     asprintf(&buf,
              "set fcs/aileron-cmd-norm %f\n"
              "set fcs/elevator-cmd-norm %f\n"
@@ -351,12 +355,14 @@ void JSBSim::send_servos(const struct sitl_input &input)
              "set atmosphere/wind-mag-fps %f\n"
              "set atmosphere/turbulence/milspec/windspeed_at_20ft_AGL-fps %f\n"
              "set atmosphere/turbulence/milspec/severity %f\n"
+             "set atmosphere/wind-down-fps %f\n"
              "step\n",
              aileron, elevator, rudder, throttle,
              radians(input.wind.direction),
              wind_speed_fps,
              wind_speed_fps/3,
-             input.wind.turbulence);
+             input.wind.turbulence,
+             -wind_vspd_fps );
     ssize_t buflen = strlen(buf);
     ssize_t sent = sock_control.send(buf, buflen);
     free(buf);
@@ -469,6 +475,33 @@ void JSBSim::update(const struct sitl_input &input)
     adjust_frame_time(1000);
     sync_frame_time();
     drain_control_socket();
+}
+
+float JSBSim::get_local_updraft(Location currentloc)
+{
+    #define NTHERMALS 1
+    float thermals_w[] = {4.0};
+    float thermals_r[] = {80.0};
+    float thermals_x[] = {0.0};
+    float thermals_y[] = {-260.0};
+
+    Location homeloc;
+    homeloc.lat = -353629380;
+    homeloc.lng = 1491650850;
+
+    Vector2f acRel = location_diff(homeloc,currentloc);
+
+    int iThermal;
+    float w = 0.0f;
+    float r;
+    for (iThermal=0;iThermal<NTHERMALS;iThermal++) {
+        Vector2f thermalRel(thermals_x[iThermal],thermals_y[iThermal]);
+        Vector2f relVec = acRel - thermalRel;
+        r = relVec.length();
+        w += thermals_w[iThermal]*exp(-r/thermals_r[iThermal]);
+    }
+
+    return w;
 }
 
 } // namespace SITL
