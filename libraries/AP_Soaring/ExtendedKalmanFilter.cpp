@@ -1,26 +1,8 @@
 #include "ExtendedKalmanFilter.h"
 #include "AP_Math/matrixN.h"
 
-
-float ExtendedKalmanFilter::measurementpredandjacobian(VectorN<float,N> &A)
-{
-    // This function computes the Jacobian using equations from
-    // analytical derivation of Gaussian updraft distribution
-    // This expression gets used lots
-    float expon = expf(- (powf(X[2], 2) + powf(X[3], 2)) / powf(X[1], 2));
-    // Expected measurement
-    float w = X[0] * expon;
-
-    // Elements of the Jacobian
-    A[0] = expon;
-    A[1] = 2 * X[0] * ((powf(X[2],2) + powf(X[3],2)) / powf(X[1],3)) * expon;
-    A[2] = -2 * (X[0] * X[2] / powf(X[1],2)) * expon;
-    A[3] = A[2] * X[3] / X[2];
-    return w;
-}
-
-
-void ExtendedKalmanFilter::reset(const VectorN<float,N> &x, const MatrixN<float,N> &p, const MatrixN<float,N> q, float r)
+template <uint8_t N>
+void ExtendedKalmanFilter<N>::reset(const VectorN<float,N> &x, const MatrixN<float,N> &p, const MatrixN<float,N> q, float r)
 {
     P = p;
     X = x;
@@ -29,17 +11,25 @@ void ExtendedKalmanFilter::reset(const VectorN<float,N> &x, const MatrixN<float,
 }
 
 
-void ExtendedKalmanFilter::update(float z, float Vx, float Vy)
+template <uint8_t N>
+void ExtendedKalmanFilter<N>::update(float zt, float Vx, float Vy)
 {
     MatrixN<float,N> tempM;
     VectorN<float,N> H;
     VectorN<float,N> P12;
     VectorN<float,N> K;
-    
+    VectorN<float,2> input;
+    VectorN<float,1> z;
+
+    input[0] = Vx;
+    input[1] = Vy;
+
+    z[0] = zt;
+
     // LINE 28
     // Estimate new state from old.
-    X[2] -= Vx;
-    X[3] -= Vy;
+
+    _stateFunc(X,input);
 
     // LINE 33
     // Update the covariance matrix
@@ -52,7 +42,8 @@ void ExtendedKalmanFilter::update(float z, float Vx, float Vy)
     // state
     // LINE 37
     // [z1,H] = ekf.jacobian_h(x1);
-    float z1 = measurementpredandjacobian(H);
+    VectorN<float,1> z1;
+    _measFunc(X,H,z1);
 
     // LINE 40
     // P12 = P * H';
@@ -66,7 +57,7 @@ void ExtendedKalmanFilter::update(float z, float Vx, float Vy)
     // Correct the state estimate using the measurement residual.
     // LINE 44
     // X = x1 + K * (z - z1);
-    X += K * (z - z1);
+    X += K * (z - z1)[0];
 
     // Correct the covariance too.
     // LINE 46
@@ -77,3 +68,6 @@ void ExtendedKalmanFilter::update(float z, float Vx, float Vy)
     
     P.force_symmetry();
 }
+
+template void ExtendedKalmanFilter<4>::reset(const VectorN<float,4> &x, const MatrixN<float,4> &p, const MatrixN<float,4> q, float r);
+template void ExtendedKalmanFilter<4>::update(float zt, float Vx, float Vy);

@@ -9,19 +9,17 @@ Extended Kalman Filter class by Sam Tabor, 2013.
 
 #include <AP_Math/matrixN.h>
 
-#define N 4
-
+template <uint8_t N>
 class ExtendedKalmanFilter {
 public:
-    ExtendedKalmanFilter(void) {}
-    
+    ExtendedKalmanFilter(void (*measFunc)(VectorN<float,N> X, VectorN<float,N> &A, VectorN<float,1> &z1), 
+                         void (*stateFunc)(VectorN<float,N> &X, VectorN<float,2> inputs)) : _measFunc(measFunc), _stateFunc(stateFunc) {}
+    void (*_measFunc)(VectorN<float,N> X, VectorN<float,N> &A, VectorN<float,1> &z1);
+    void (*_stateFunc)(VectorN<float,N> &X, VectorN<float,2> inputs);
     VectorN<float,N> X;
     MatrixN<float,N> P;
     MatrixN<float,N> Q;
     float R;
     void reset(const VectorN<float,N> &x, const MatrixN<float,N> &p, const MatrixN<float,N> q, float r);
     void update(float z, float Vx, float Vy);
-
-private:
-    float measurementpredandjacobian(VectorN<float,N> &A);
 };

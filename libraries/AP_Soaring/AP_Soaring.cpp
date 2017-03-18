@@ -399,3 +399,28 @@ bool SoaringController::is_active() const
     // active when above 1700
     return hal.rcin->read(soar_active_ch-1) >= 1700;
 }
+
+void SoaringController::ekf_meas_prediction(VectorN<float,N_STATES> X, VectorN<float,N_STATES> &A, VectorN<float,1> &w)
+{
+    // This function computes the Jacobian using equations from
+    // analytical derivation of Gaussian updraft distribution
+    // This expression gets used lots
+    float expon = expf(- (powf(X[2], 2) + powf(X[3], 2)) / powf(X[1], 2));
+    // Expected measurement
+    w[0] = X[0] * expon;
+
+    // Elements of the Jacobian
+    A[0] = expon;
+    A[1] = 2 * X[0] * ((powf(X[2],2) + powf(X[3],2)) / powf(X[1],3)) * expon;
+    A[2] = -2 * (X[0] * X[2] / powf(X[1],2)) * expon;
+    A[3] = A[2] * X[3] / X[2];
+}
+
+void SoaringController::ekf_state_prediction(VectorN<float,N_STATES> &X, VectorN<float,2> input)
+{
+    // In-place update of estimated state.
+    X[2] -= input[0];
+    X[3] -= input[1];
+}
+
+
