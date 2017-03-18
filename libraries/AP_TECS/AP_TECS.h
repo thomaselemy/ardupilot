@@ -30,7 +30,7 @@
 
 class AP_TECS : public AP_SpdHgtControl {
 public:
-    AP_TECS(AP_AHRS &ahrs, const AP_Vehicle::FixedWing &parms) :
+    AP_TECS(AP_AHRS &ahrs, const AP_Vehicle::FixedWing &parms, const SoaringController &soaring_controller) :
         _ahrs(ahrs),
         aparm(parms),
         _soaring_controller(soaring_controller)
