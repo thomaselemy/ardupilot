@@ -268,9 +268,9 @@
                           <independentVar>aero/alpha-rad</independentVar>
                           <tableData>
                               -1.5700	1.5000
-                              -0.2600	0.0560
-                              0.0000	0.0280
-                              0.2600	0.0560
+                              -0.2600	0.0270
+                              0.0000	0.0270
+                              0.2600	0.0270
                               1.5700	1.5000
                           </tableData>
                       </table>
@@ -282,7 +282,7 @@
                     <property>aero/qbar-psf</property>
                     <property>metrics/Sw-sqft</property>
                     <property>aero/cl-squared</property>
-                    <value>0.0400</value>
+                    <value>0.03100</value>
                 </product>
             </function>
             <function name="aero/coefficient/CDbeta">
