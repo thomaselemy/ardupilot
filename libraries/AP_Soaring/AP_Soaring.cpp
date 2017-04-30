@@ -204,7 +204,6 @@ bool SoaringController::check_init_thermal_criteria()
 void SoaringController::init_thermalling()
 {
     // Calc filter matrices - so that changes to parameters can be updated by switching in and out of thermal mode
-    float r = powf(thermal_r, 2);
     float cov_q1 = powf(thermal_q1, 2); // State covariance
     float cov_q2 = powf(thermal_q2, 2); // State covariance
     const float init_q[4] = {cov_q1, cov_q2, cov_q2, cov_q2};
@@ -218,6 +217,9 @@ void SoaringController::init_thermalling()
                               thermal_distance_ahead * cosf(_ahrs.yaw),
                               thermal_distance_ahead * sinf(_ahrs.yaw)};
     const VectorN<float,4> xr{init_xr};
+
+    float init_r = powf(thermal_r,2);
+    const MatrixN<float,1> r{&init_r};
 
     // Also reset covariance matrix p so filter is not affected by previous data
     _ekf.reset(xr, p, q, r);
@@ -294,8 +296,10 @@ void SoaringController::update_thermalling()
                                                (double)dx_w,
                                                (double)dy_w);
 
-        //log_data();
-        _ekf.update(_vario_reading,dx, dy);       // update the filter
+        const VectorN<float,1> reading{&_vario_reading};
+        const float inputA[2] = {dx,dy};
+        VectorN<float,2> input{inputA};
+        _ekf.update(reading,input);       // update the filter
 
         _prev_update_location = current_loc;      // save for next time
         _prev_update_time = AP_HAL::micros64();

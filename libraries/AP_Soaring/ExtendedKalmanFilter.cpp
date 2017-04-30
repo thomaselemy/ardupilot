@@ -2,7 +2,10 @@
 #include "AP_Math/matrixN.h"
 
 template <uint8_t N, uint8_t M, uint8_t L>
-void ExtendedKalmanFilter<N,M,L>::reset(const VectorN<float,N> &x, const MatrixN<float,N> &p, const MatrixN<float,N> q, float r)
+void ExtendedKalmanFilter<N,M,L>::reset(const VectorN<float,N> &x,
+                                        const MatrixN<float,N> &p,
+                                        const MatrixN<float,N> q,
+                                        const MatrixN<float,M> r)
 {
     P = p;
     X = x;
@@ -12,19 +15,13 @@ void ExtendedKalmanFilter<N,M,L>::reset(const VectorN<float,N> &x, const MatrixN
 
 
 template <uint8_t N, uint8_t M, uint8_t L>
-void ExtendedKalmanFilter<N,M,L>::update(float zt, float Vx, float Vy)
+void ExtendedKalmanFilter<N,M,L>::update(const VectorN<float,M> &z,
+                                         const VectorN<float,L> input)
 {
     MatrixN<float,N> tempM;
     VectorN<float,N> H;
     VectorN<float,N> P12;
     VectorN<float,N> K;
-    VectorN<float,L> input;
-    VectorN<float,M> z;
-
-    input[0] = Vx;
-    input[1] = Vy;
-
-    z[0] = zt;
 
     // LINE 28
     // Estimate new state from old.
@@ -52,7 +49,7 @@ void ExtendedKalmanFilter<N,M,L>::update(float zt, float Vx, float Vy)
     // LINE 41
     // Calculate the KALMAN GAIN
     // K = P12 * inv(H*P12 + ekf.R);                     %Kalman filter gain
-    K = P12 * 1.0 / (H * P12 + R);
+    K = P12 * 1.0 / (H * P12 + R[0]);
 
     // Correct the state estimate using the measurement residual.
     // LINE 44
@@ -69,5 +66,5 @@ void ExtendedKalmanFilter<N,M,L>::update(float zt, float Vx, float Vy)
     P.force_symmetry();
 }
 
-template void ExtendedKalmanFilter<4,1,2>::reset(const VectorN<float,4> &x, const MatrixN<float,4> &p, const MatrixN<float,4> q, float r);
-template void ExtendedKalmanFilter<4,1,2>::update(float zt, float Vx, float Vy);
+template void ExtendedKalmanFilter<4,1,2>::reset(const VectorN<float,4> &x, const MatrixN<float,4> &p, const MatrixN<float,4> q, const MatrixN<float,1> r);
+template void ExtendedKalmanFilter<4,1,2>::update(const VectorN<float,1> &z, const VectorN<float,2> input);

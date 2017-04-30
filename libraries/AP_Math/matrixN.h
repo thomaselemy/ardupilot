@@ -31,6 +31,10 @@ public:
         }
     }
 
+    inline T operator[](uint8_t i) {
+        return *v[i];
+    }
+
     // multiply two vectors to give a matrix, in-place
     void mult(const VectorN<T,N> &A, const VectorN<T,N> &B);
 

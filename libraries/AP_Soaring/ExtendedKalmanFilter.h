@@ -16,10 +16,12 @@ public:
                          void (*stateFunc)(VectorN<float,N> &X, VectorN<float,L> inputs)) : _measFunc(measFunc), _stateFunc(stateFunc) {}
     void (*_measFunc)(VectorN<float,N> X, VectorN<float,N> &A, VectorN<float,M> &z1);
     void (*_stateFunc)(VectorN<float,N> &X, VectorN<float,L> inputs);
+
     VectorN<float,N> X;
     MatrixN<float,N> P;
     MatrixN<float,N> Q;
-    float R;
-    void reset(const VectorN<float,N> &x, const MatrixN<float,N> &p, const MatrixN<float,N> q, float r);
-    void update(float z, float Vx, float Vy);
+    MatrixN<float,M> R;
+
+    void reset(const VectorN<float,N> &x, const MatrixN<float,N> &p, const MatrixN<float,N> q, const MatrixN<float,M> r);
+    void update(const VectorN<float,M> &z, const VectorN<float,L> input);
 };
