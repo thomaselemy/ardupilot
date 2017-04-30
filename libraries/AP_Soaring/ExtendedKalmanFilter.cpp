@@ -1,8 +1,8 @@
 #include "ExtendedKalmanFilter.h"
 #include "AP_Math/matrixN.h"
 
-template <uint8_t N>
-void ExtendedKalmanFilter<N>::reset(const VectorN<float,N> &x, const MatrixN<float,N> &p, const MatrixN<float,N> q, float r)
+template <uint8_t N, uint8_t M, uint8_t L>
+void ExtendedKalmanFilter<N,M,L>::reset(const VectorN<float,N> &x, const MatrixN<float,N> &p, const MatrixN<float,N> q, float r)
 {
     P = p;
     X = x;
@@ -11,15 +11,15 @@ void ExtendedKalmanFilter<N>::reset(const VectorN<float,N> &x, const MatrixN<flo
 }
 
 
-template <uint8_t N>
-void ExtendedKalmanFilter<N>::update(float zt, float Vx, float Vy)
+template <uint8_t N, uint8_t M, uint8_t L>
+void ExtendedKalmanFilter<N,M,L>::update(float zt, float Vx, float Vy)
 {
     MatrixN<float,N> tempM;
     VectorN<float,N> H;
     VectorN<float,N> P12;
     VectorN<float,N> K;
-    VectorN<float,2> input;
-    VectorN<float,1> z;
+    VectorN<float,L> input;
+    VectorN<float,M> z;
 
     input[0] = Vx;
     input[1] = Vy;
@@ -42,7 +42,7 @@ void ExtendedKalmanFilter<N>::update(float zt, float Vx, float Vy)
     // state
     // LINE 37
     // [z1,H] = ekf.jacobian_h(x1);
-    VectorN<float,1> z1;
+    VectorN<float,M> z1;
     _measFunc(X,H,z1);
 
     // LINE 40
@@ -69,5 +69,5 @@ void ExtendedKalmanFilter<N>::update(float zt, float Vx, float Vy)
     P.force_symmetry();
 }
 
-template void ExtendedKalmanFilter<4>::reset(const VectorN<float,4> &x, const MatrixN<float,4> &p, const MatrixN<float,4> q, float r);
-template void ExtendedKalmanFilter<4>::update(float zt, float Vx, float Vy);
+template void ExtendedKalmanFilter<4,1,2>::reset(const VectorN<float,4> &x, const MatrixN<float,4> &p, const MatrixN<float,4> q, float r);
+template void ExtendedKalmanFilter<4,1,2>::update(float zt, float Vx, float Vy);

@@ -25,10 +25,13 @@
 #define ASPD_FILT 0.05
 #define TE_FILT 0.03
 #define TE_FILT_DISPLAYED 0.15
+
 #define N_STATES 4
+#define N_MEAS   1
+#define N_INPUTS 2
 
 class SoaringController {
-    ExtendedKalmanFilter<N_STATES> _ekf{&ekf_meas_prediction,&ekf_state_prediction};
+    ExtendedKalmanFilter<N_STATES, N_MEAS, N_INPUTS> _ekf{&ekf_meas_prediction,&ekf_state_prediction};
     AP_AHRS &_ahrs;
     AP_SpdHgtControl &_spdHgt;
     const AP_Vehicle::FixedWing &_aparm;
@@ -112,7 +115,7 @@ public:
     }
 
     void update_vario();
-    static void ekf_meas_prediction(VectorN<float,N_STATES> X, VectorN<float,N_STATES> &A, VectorN<float,1> &w);
+    static void ekf_meas_prediction(VectorN<float,N_STATES> X, VectorN<float,N_STATES> &A, VectorN<float,N_MEAS> &w);
 
-    static void ekf_state_prediction(VectorN<float,N_STATES> &X, VectorN<float,2> input);
+    static void ekf_state_prediction(VectorN<float,N_STATES> &X, VectorN<float,N_INPUTS> input);
 };

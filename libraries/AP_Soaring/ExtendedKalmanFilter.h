@@ -9,13 +9,13 @@ Extended Kalman Filter class by Sam Tabor, 2013.
 
 #include <AP_Math/matrixN.h>
 
-template <uint8_t N>
+template <uint8_t N, uint8_t M, uint8_t L>
 class ExtendedKalmanFilter {
 public:
-    ExtendedKalmanFilter(void (*measFunc)(VectorN<float,N> X, VectorN<float,N> &A, VectorN<float,1> &z1), 
-                         void (*stateFunc)(VectorN<float,N> &X, VectorN<float,2> inputs)) : _measFunc(measFunc), _stateFunc(stateFunc) {}
-    void (*_measFunc)(VectorN<float,N> X, VectorN<float,N> &A, VectorN<float,1> &z1);
-    void (*_stateFunc)(VectorN<float,N> &X, VectorN<float,2> inputs);
+    ExtendedKalmanFilter(void (*measFunc)(VectorN<float,N> X, VectorN<float,N> &A, VectorN<float,M> &z1), 
+                         void (*stateFunc)(VectorN<float,N> &X, VectorN<float,L> inputs)) : _measFunc(measFunc), _stateFunc(stateFunc) {}
+    void (*_measFunc)(VectorN<float,N> X, VectorN<float,N> &A, VectorN<float,M> &z1);
+    void (*_stateFunc)(VectorN<float,N> &X, VectorN<float,L> inputs);
     VectorN<float,N> X;
     MatrixN<float,N> P;
     MatrixN<float,N> Q;
