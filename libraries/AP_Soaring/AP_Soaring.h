@@ -64,12 +64,13 @@ protected:
     AP_Float polar_CD0;
     AP_Float polar_B;
     AP_Float polar_K;
-    AP_Float alt_max;
     AP_Float alt_min;
     AP_Float alt_cutoff;
 
 public:
     SoaringController(AP_AHRS &ahrs, AP_SpdHgtControl &spdHgt, const AP_Vehicle::FixedWing &parms);
+
+    AP_Float alt_max;
 
     // this supports the TECS_* user settable parameters
     static const struct AP_Param::GroupInfo var_info[];
@@ -85,7 +86,7 @@ public:
     bool is_active() const;
     bool get_throttle_suppressed() const
     {
-        return _throttle_suppressed;
+        return _throttle_suppressed && soar_active==1;
     }
     void set_throttle_suppressed(bool suppressed)
     {
