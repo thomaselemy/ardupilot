@@ -169,7 +169,7 @@ bool SoaringController::suppress_throttle()
 
 bool SoaringController::check_thermal_criteria()
 {
-    return (soar_active
+    return (soar_active==1
             && ((AP_HAL::micros64() - _cruise_start_time_us) > ((unsigned)min_cruise_s * 1e6))
             && _vario.filtered_reading > thermal_vspeed
             && _vario.alt < alt_max
@@ -181,7 +181,7 @@ bool SoaringController::check_cruise_criteria()
     float thermalability = (_ekf.X[0]*expf(-powf(_loiter_rad / _ekf.X[1], 2))) - EXPECTED_THERMALLING_SINK;
     float alt = _vario.alt;
 
-    if (soar_active && (AP_HAL::micros64() - _thermal_start_time_us) > ((unsigned)min_thermal_s * 1e6) && thermalability < McCready(alt)) {
+    if (soar_active==1 && (AP_HAL::micros64() - _thermal_start_time_us) > ((unsigned)min_thermal_s * 1e6) && thermalability < McCready(alt)) {
         gcs().send_text(MAV_SEVERITY_INFO, "Thermal weak, recommend quitting: W %f R %f th %f alt %f Mc %f\n", (double)_ekf.X[0], (double)_ekf.X[1], (double)thermalability, (double)alt, (double)McCready(alt));
         return true;
     } else if (soar_active && (alt>alt_max || alt<alt_min)) {
@@ -194,7 +194,7 @@ bool SoaringController::check_cruise_criteria()
 
 bool SoaringController::check_init_thermal_criteria()
 {
-    if (soar_active && (AP_HAL::micros64() - _thermal_start_time_us) < ((unsigned)min_thermal_s * 1e6)) {
+    if (soar_active==1 && (AP_HAL::micros64() - _thermal_start_time_us) < ((unsigned)min_thermal_s * 1e6)) {
         return true;
     }
 
@@ -327,10 +327,10 @@ bool SoaringController::is_active() const
     if (!soar_active) {
         return false;
     }
-    if (soar_active_ch <= 0) {
-        // no activation channel
-        return true;
+    if (soar_active_ch <= 0 ||
+        hal.rcin->read(soar_active_ch-1) >= 1700) {
+        // Activation channel above 1700, or unset.
+        return soar_active;
     }
-    // active when above 1700
-    return hal.rcin->read(soar_active_ch-1) >= 1700;
+    return false;
 }

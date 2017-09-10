@@ -781,6 +781,13 @@ void AP_TECS::_update_pitch(void)
             SKE_weighting = constrain_float(_spdWeightLand, 0.0f, 2.0f);
         }
     }
+    else if (_soaring_controller.is_active() == 2 &&
+            _flags.underspeed == false &&
+            _height < _soaring_controller.alt_max) {
+        // Do not attempt to control alt using pitch - allow alt to increase if aircraft
+        // is in lift.
+        SKE_weighting = 2.0f;
+    }
 
     logging.SKE_weighting = SKE_weighting;
     
