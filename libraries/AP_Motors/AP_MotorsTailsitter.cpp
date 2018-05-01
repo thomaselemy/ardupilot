@@ -86,10 +86,25 @@ void AP_MotorsTailsitter::output_to_motors()
         }
     }
     // outputs are setup here, and written to the HAL by the plane servos loop
-    SRV_Channels::set_output_scaled(SRV_Channel::k_aileron,  _aileron*SERVO_OUTPUT_RANGE);
-    SRV_Channels::set_output_scaled(SRV_Channel::k_elevator, _elevator*SERVO_OUTPUT_RANGE);
+
     SRV_Channels::set_output_scaled(SRV_Channel::k_rudder,   _rudder*SERVO_OUTPUT_RANGE);
     SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, throttle*THROTTLE_RANGE);
+
+    float aileron_val = _aileron*SERVO_OUTPUT_RANGE;
+    float elevator_val = _elevator*SERVO_OUTPUT_RANGE;
+
+
+    float out_left = constrain_float((elevator_val - aileron_val), -4500, 4500);
+    float out_right = constrain_float((elevator_val + aileron_val), -4500, 4500);
+
+    // fprintf(stderr,("out left: %f \n"), out_left);
+    // fprintf(stderr,("out right: %f \n"), out_right);
+
+
+    SRV_Channels::set_output_scaled(SRV_Channel::kps_flapLeft, out_left);
+    SRV_Channels::set_output_scaled(SRV_Channel::kps_flapRight, out_right);
+    SRV_Channels::set_output_scaled(SRV_Channel::kps_aileronLeft, out_left);
+    SRV_Channels::set_output_scaled(SRV_Channel::kps_aileronRight, out_right);
 
     // also support differential roll with twin motors
     SRV_Channels::set_output_scaled(SRV_Channel::k_throttleLeft,  throttle_left*THROTTLE_RANGE);

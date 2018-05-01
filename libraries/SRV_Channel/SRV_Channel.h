@@ -115,7 +115,13 @@ public:
         k_motor11               = 84,
         k_motor12               = 85,
         k_dspoilerLeft2         = 86,           ///< differential spoiler 2 (left wing)
-        k_dspoilerRight2        = 87,           ///< differential spoiler 2 (right wing)
+        k_dspoilerRight2        = 87,
+
+        kps_flapLeft            = 91,
+        kps_flapRight           = 92,
+        kps_aileronLeft         = 93,
+        kps_aileronRight        = 94,
+        kps_elevator            = 95,           ///< differential spoiler 2 (right wing)
         k_nr_aux_servo_functions         ///< This must be the last enum value (only add new values _before_ this one)
     } Aux_servo_function_t;
 
