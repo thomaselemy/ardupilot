@@ -548,6 +548,9 @@ void Plane::set_servos_flaps(void)
         auto_flap_percent = manual_flap_percent;
     }
 
+    SRV_Channels::set_output_scaled(SRV_Channel::kps_flapLeft, auto_flap_percent);
+    SRV_Channels::set_output_scaled(SRV_Channel::kps_flapRight, auto_flap_percent);
+
     SRV_Channels::set_output_scaled(SRV_Channel::k_flap_auto, auto_flap_percent);
     SRV_Channels::set_output_scaled(SRV_Channel::k_flap, manual_flap_percent);
 
@@ -820,6 +823,10 @@ void Plane::servos_auto_trim(void)
     // adjust trim on channels by a small amount according to I value
     float roll_I = rollController.get_pid_info().I;
     float pitch_I = pitchController.get_pid_info().I;
+
+    g2.servo_channels.adjust_trim(SRV_Channel::kps_aileronLeft, roll_I);
+    g2.servo_channels.adjust_trim(SRV_Channel::kps_aileronRight, -roll_I);
+    g2.servo_channels.adjust_trim(SRV_Channel::kps_elevator, pitch_I);
     
     g2.servo_channels.adjust_trim(SRV_Channel::k_aileron, roll_I);
     g2.servo_channels.adjust_trim(SRV_Channel::k_elevator, pitch_I);

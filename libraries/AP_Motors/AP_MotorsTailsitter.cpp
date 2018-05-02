@@ -105,7 +105,8 @@ void AP_MotorsTailsitter::output_to_motors()
     SRV_Channels::set_output_scaled(SRV_Channel::kps_flapRight, out_right);
     SRV_Channels::set_output_scaled(SRV_Channel::kps_aileronLeft, out_left);
     SRV_Channels::set_output_scaled(SRV_Channel::kps_aileronRight, out_right);
-
+    SRV_Channels::set_output_scaled(SRV_Channel::kps_elevator, 4500);
+    
     // also support differential roll with twin motors
     SRV_Channels::set_output_scaled(SRV_Channel::k_throttleLeft,  throttle_left*THROTTLE_RANGE);
     SRV_Channels::set_output_scaled(SRV_Channel::k_throttleRight, throttle_right*THROTTLE_RANGE);
