@@ -90,8 +90,8 @@ void AP_MotorsTailsitter::output_to_motors()
     SRV_Channels::set_output_scaled(SRV_Channel::k_rudder,   _rudder*SERVO_OUTPUT_RANGE);
     SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, throttle*THROTTLE_RANGE);
 
-    float aileron_val = _aileron*SERVO_OUTPUT_RANGE;
-    float elevator_val = _elevator*SERVO_OUTPUT_RANGE;
+    float aileron_val = SRV_Channels::get_output_scaled(SRV_Channel::k_aileron);
+    float elevator_val = SRV_Channels::get_output_scaled(SRV_Channel::k_elevator);
 
 
     float out_left = constrain_float((elevator_val - aileron_val), -4500, 4500);
